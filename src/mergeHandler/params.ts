@@ -1,7 +1,7 @@
 import { isFunction } from 'remeda';
 import type { HandlerResult, HandlerValue } from './types';
 
-export function handlerStrategy<T>(
+export function handlerStrategy<_T>(
   currentResult: HandlerResult,
   value: HandlerValue,
 ): HandlerResult | undefined {

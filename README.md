@@ -1,3 +1,3 @@
-# @niche-works/react-merge
+# @fringeworks/react-merge
 
 A niche library for merging React properties.

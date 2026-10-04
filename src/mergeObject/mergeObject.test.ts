@@ -20,7 +20,7 @@ describe('mergeObject', () => {
       [{ a: 1, b: 2, c: 3 }, ['a'], { b: 12 }, null, { a: 21, d: 24 }],
       [
         {
-          strategy: (current: any, value: any) => {
+          strategy: (_current: any, value: any) => {
             return value;
           },
         },
@@ -56,7 +56,7 @@ describe('mergeObject', () => {
           },
         },
         {
-          condition: (key: PropertyKey, value: unknown) => key === 'c',
+          condition: (key: PropertyKey, _value: unknown) => key === 'c',
           strategy: (current: any, value: any) => {
             if (current == undefined) {
               return value;
@@ -65,7 +65,7 @@ describe('mergeObject', () => {
             }
           },
         },
-        { strategy: (current: any, value: any) => value },
+        { strategy: (_current: any, value: any) => value },
       ],
     );
     expect(result).toEqual({ a: 21, b: 2, c: 39, d: 14 });
@@ -98,7 +98,7 @@ describe('mergeObject', () => {
           },
         },
         {
-          condition: (key: PropertyKey, value: unknown) => key === 'c',
+          condition: (key: PropertyKey, _value: unknown) => key === 'c',
           strategy: (current: any, value: any) => {
             if (current == undefined) {
               return value;

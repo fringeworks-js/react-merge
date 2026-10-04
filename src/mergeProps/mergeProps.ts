@@ -44,7 +44,7 @@ export default function mergeProps<PROPS, REF>(
         initialValue: styleInitialValue,
       },
       {
-        strategy: (current, value) => value,
+        strategy: (_current, value) => value,
       },
     ],
     {

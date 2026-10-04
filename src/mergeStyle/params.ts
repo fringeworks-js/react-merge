@@ -1,4 +1,4 @@
-import maybeAssign from '@niche-works/utils/object/maybeAssign';
+import maybeAssign from '@fringeworks/utils/object/maybeAssign';
 import { isFunction, isPlainObject } from 'remeda';
 import type { StyleResult, StyleValue } from './types';
 

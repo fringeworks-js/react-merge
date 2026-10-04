@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import type { ClassNameResult, ClassNameValue } from './types';
 
-export function classNameStrategy<T>(
+export function classNameStrategy(
   currentResult: ClassNameResult,
   value: ClassNameValue,
 ): ClassNameResult | undefined {
