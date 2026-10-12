@@ -6,11 +6,12 @@ export function handlerStrategy<_T>(
   value: HandlerValue,
 ): HandlerResult | undefined {
   if (isFunction(value)) {
-    return <T>(...args: T[]) => {
-      currentResult && currentResult(...args);
+    return (...args: unknown[]) => {
+      currentResult?.(...args);
       value(...args);
     };
   }
+  return undefined;
 }
 
 export const handlerInitialValue = undefined;

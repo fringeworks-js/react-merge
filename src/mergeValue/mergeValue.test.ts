@@ -16,6 +16,7 @@ describe('mergeValue', () => {
         if (typeof value === 'string') {
           return current + value;
         }
+        return undefined;
       },
       { initialValue: '' },
     );

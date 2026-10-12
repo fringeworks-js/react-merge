@@ -18,7 +18,7 @@ export default function mergeObject<O, R>(
   strategies: MergeStrategyItem[],
   options: MergeObjectOptions<O, R> = {},
 ): R {
-  const { initialValue = () => ({}) as R, excludeUnmatched } = options;
+  const { initialValue = () => ({}) as R, excludeUnmatched = false } = options;
   return mergeValue<O, R>(
     objectList,
     (currentResult, value) => {
@@ -77,7 +77,7 @@ function _mergeObject<O>(
 }
 
 function _matchCondition(
-  condition: MergeCondition,
+  condition: MergeCondition | undefined,
   key: PropertyKey,
   value: unknown,
 ): boolean {

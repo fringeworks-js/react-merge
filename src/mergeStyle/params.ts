@@ -11,6 +11,7 @@ export function styleStrategy(
   } else if (isPlainObject(value)) {
     return maybeAssign(currentResult, value);
   }
+  return undefined;
 }
 
 export function styleInitialValue() {

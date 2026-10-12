@@ -7,6 +7,15 @@ export type HandlerValue =
 
 export type HandlerArray = Array<HandlerValue>;
 
-export type HandlerResult = HandlerFn;
+/**
+ * まとめたハンドラー
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type HandlerResult = (...args: any[]) => void;
 
-export type HandlerFn = <T>(...args: T[]) => void;
+/**
+ * ハンドラー\
+ * 引数の型を問わずにまとめられるよう、引数は any にしている
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type HandlerFn = (...args: any[]) => unknown;

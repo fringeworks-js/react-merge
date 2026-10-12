@@ -16,12 +16,12 @@ describe('mergeProps', () => {
     const style1 = { color: 'red', backgroundColor: 'green' };
     const style2 = { backgroundImage: './img.jpg' };
     const style3 = { backgroundColor: 'blue' };
-    const value1 = { current: null };
-    const onChange1 = (value) => {
+    const value1: { current: unknown } = { current: null };
+    const onChange1 = (value: unknown) => {
       value1.current = value;
     };
-    const value3 = { current: null };
-    const onChange3 = (value) => {
+    const value3: { current: unknown } = { current: null };
+    const onChange3 = (value: unknown) => {
       value3.current = value;
     };
     const result = mergeProps<any, any>(

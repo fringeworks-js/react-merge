@@ -31,7 +31,8 @@ function _mergeValue<V, R>(
   let currentResult: R =
     typeof initialValue === 'function'
       ? (initialValue as InitailValueFn<V, R>)(values, status)
-      : initialValue;
+      : // initialValue を省略した場合は undefined から始める
+        (initialValue as R);
 
   const strategyResult = strategy(currentResult, values, status);
   if (strategyResult !== undefined) {
@@ -68,11 +69,10 @@ function _mergeArray<V, R>(
   let currentResult: R =
     typeof initialValue === 'function'
       ? (initialValue as InitailValueFn<V, R>)(values, status)
-      : initialValue;
+      : // initialValue を省略した場合は undefined から始める
+        (initialValue as R);
 
-  const length = values.length;
-  for (let index = 0; index < length; index++) {
-    const value = values[index];
+  for (const [index, value] of values.entries()) {
     const subResult = _mergeValue(value, strategy, options, { index });
     const subStrategyResult = strategy(currentResult, subResult, status);
     if (subStrategyResult !== undefined) {

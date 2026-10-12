@@ -10,9 +10,9 @@ describe('mergeHandler', () => {
     let handlerResult1;
     let handlerResult2;
     let handlerResult3;
-    const handler1 = (value) => (handlerResult1 = value);
-    const handler2 = (value) => (handlerResult2 = value + 1);
-    const handler3 = (value) => (handlerResult3 = value + 2);
+    const handler1 = (value: number) => (handlerResult1 = value);
+    const handler2 = (value: number) => (handlerResult2 = value + 1);
+    const handler3 = (value: number) => (handlerResult3 = value + 2);
     const result = mergeHandler([
       handler1,
       null,
@@ -32,9 +32,9 @@ describe('mergeHandler', () => {
     let handlerResult1;
     let handlerResult2;
     let handlerResult3;
-    const handler1 = (value) => (handlerResult1 = value);
-    const handler2 = (value) => (handlerResult2 = value + 1);
-    const handler3 = (value) => (handlerResult3 = value + 2);
+    const handler1 = (value: number) => (handlerResult1 = value);
+    const handler2 = (value: number) => (handlerResult2 = value + 1);
+    const handler3 = (value: number) => (handlerResult3 = value + 2);
     const result = mergeHandler([
       handler1,
       null,
