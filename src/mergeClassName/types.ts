@@ -1,7 +1,7 @@
 export type ClassNameValue =
   | ClassNameArray
   | string
-  | ((currentResult: ClassNameResult) => string)
+  | ((currentResult: ClassNameResult) => ClassNameResult)
   | boolean
   | null
   | undefined;

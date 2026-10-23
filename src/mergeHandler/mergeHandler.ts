@@ -1,20 +1,14 @@
 import mergeValue from '../mergeValue';
-import { handlerInitialValue, handlerStrategy } from './params';
+import { handlerStrategy } from './_params';
 import type { HandlerResult, HandlerValue } from './types';
 
 /**
  * ハンドラーのマージを行う関数
  * @param handlerList
- * @returns
+ * @returns 渡したハンドラーを順に呼び出す関数。ハンドラーが無ければ undefined
  */
-export default function mergeRef<T>(
+export default function mergeHandler(
   ...handlerList: HandlerValue[]
-): HandlerResult {
-  return mergeValue<HandlerValue, HandlerResult>(
-    handlerList,
-    handlerStrategy<T>,
-    {
-      initialValue: handlerInitialValue,
-    },
-  );
+): HandlerResult | undefined {
+  return mergeValue<HandlerValue, HandlerResult>(handlerList, handlerStrategy);
 }

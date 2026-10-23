@@ -1,5 +1,5 @@
 import mergeValue from '../mergeValue';
-import { classNameInitialValue, classNameStrategy } from './params';
+import { classNameInitialValue, classNameStrategy } from './_params';
 import type { ClassNameResult, ClassNameValue } from './types';
 
 /**

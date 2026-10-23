@@ -59,4 +59,85 @@ describe('mergeProps', () => {
     expect(value1.current).toBe(valueCurrent);
     expect(value3.current).toBe(valueCurrent);
   });
+
+  test('Function receives the current result', () => {
+    const handler = vi.fn();
+    const result = mergeProps<any, any>(
+      { id: 'A', className: 'a', onClick: handler },
+      (current: any) => ({ ...current, id: 'B' }),
+    );
+    result.onClick();
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(result.className).toBe('a');
+    expect(result.id).toBe('B');
+  });
+
+  test('Function can remove properties', () => {
+    const result = mergeProps<any, any>(
+      { id: 'A', onClick: () => {} },
+      ({ onClick: _onClick, ...rest }: any) => rest,
+    );
+    expect(result).toEqual({ id: 'A' });
+  });
+
+  test('Empty values do not overwrite special properties', () => {
+    const handler = vi.fn();
+    const ref = { current: null };
+    const result = mergeProps<any, any>(
+      { onClick: handler, ref, className: 'a', style: { color: 'red' } },
+      { onClick: null, ref: null, className: null, style: null },
+      { onClick: undefined, ref: false, className: false, style: false },
+    );
+    expect(result.onClick).toBe(handler);
+    expect(result.className).toBe('a');
+    expect(result.style).toEqual({ color: 'red' });
+    result.ref('value');
+    expect(ref.current).toBe('value');
+  });
+
+  test('Special properties are not added without values', () => {
+    const result = mergeProps<any, any>({
+      id: 'A',
+      className: undefined,
+      style: null,
+      ref: null,
+      onClick: null,
+    });
+    expect(result).toEqual({ id: 'A' });
+  });
+
+  test('Other properties: undefined is ignored, null overwrites', () => {
+    const result = mergeProps<any, any>(
+      { title: 'a', value: 'b' },
+      { title: undefined, value: null },
+    );
+    expect(result).toEqual({ title: 'a', value: null });
+  });
+
+  test('Arrays in special properties', () => {
+    const ref1 = { current: null };
+    const ref2 = { current: null };
+    const result = mergeProps<any, any>(
+      { className: 'a', style: { color: 'red' } },
+      {
+        className: ['b', [null, 'c']],
+        style: [{ margin: 0 }, null],
+        ref: [ref1, [ref2]],
+      },
+    );
+    expect(result.className).toBe('a b c');
+    expect(result.style).toEqual({ color: 'red', margin: 0 });
+    result.ref('value');
+    expect(ref1.current).toBe('value');
+    expect(ref2.current).toBe('value');
+  });
+
+  test('Non-function on* values are treated as normal properties', () => {
+    const handler = vi.fn();
+    const result = mergeProps<any, any>(
+      { onLabel: 'label' },
+      { onLabel: handler },
+    );
+    expect(result.onLabel).toBe(handler);
+  });
 });

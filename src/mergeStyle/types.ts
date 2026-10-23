@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 export type StyleValue =
   | StyleArray
   | CSSProperties
-  | ((currentResult: StyleResult) => CSSProperties)
+  | ((currentResult: StyleResult) => StyleResult)
   | boolean
   | null
   | undefined;

@@ -21,7 +21,7 @@ describe('mergeHandler', () => {
       handler3,
     ]);
 
-    result(10);
+    result!(10);
 
     expect(handlerResult1).toBe(10);
     expect(handlerResult2).toBe(11);
@@ -42,10 +42,27 @@ describe('mergeHandler', () => {
       [undefined, handler3],
     ]);
 
-    result(10);
+    result!(10);
 
     expect(handlerResult1).toBe(10);
     expect(handlerResult2).toBe(11);
     expect(handlerResult3).toBe(12);
+  });
+
+  test('Returns the value of the last handler', () => {
+    const result = mergeHandler(
+      () => 1,
+      () => 2,
+    );
+    expect(result!()).toBe(2);
+  });
+
+  test('Single handler is returned as is', () => {
+    const handler = () => {};
+    expect(mergeHandler(null, handler, false)).toBe(handler);
+  });
+
+  test('Only empty values', () => {
+    expect(mergeHandler(null, undefined, false, [true])).toBeUndefined();
   });
 });

@@ -1,5 +1,5 @@
 import mergeValue from '../mergeValue';
-import { styleInitialValue, styleStrategy } from './params';
+import { styleInitialValue, styleStrategy } from './_params';
 import type { StyleResult, StyleValue } from './types';
 
 /**

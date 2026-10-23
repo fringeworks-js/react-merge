@@ -1,17 +1,13 @@
 export type HandlerValue =
-  | HandlerArray
-  | HandlerFn
-  | boolean
-  | null
-  | undefined;
+  HandlerArray | HandlerFn | boolean | null | undefined;
 
 export type HandlerArray = Array<HandlerValue>;
 
 /**
- * まとめたハンドラー
+ * まとめたハンドラー\
+ * 渡したハンドラーを順に呼び出し、最後のハンドラーの戻り値を返す
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type HandlerResult = (...args: any[]) => void;
+export type HandlerResult = HandlerFn;
 
 /**
  * ハンドラー\

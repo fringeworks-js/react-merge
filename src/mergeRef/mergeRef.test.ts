@@ -27,7 +27,7 @@ describe('mergeRef', () => {
       undefined,
     ]);
     const current = {};
-    result(current);
+    result!(current);
     expect(refObject1.current).toBe(current);
     expect(refObject2.current).toBe(current);
     expect(refCallbackResult1.current).toBe(current);
@@ -52,10 +52,31 @@ describe('mergeRef', () => {
       [refObject2, refCallback2, undefined],
     ]);
     const current = {};
-    result(current);
+    result!(current);
     expect(refObject1.current).toBe(current);
     expect(refObject2.current).toBe(current);
     expect(refCallbackResult1.current).toBe(current);
     expect(refCallbackResult2.current).toBe(current);
+  });
+
+  test('Single callback ref is returned as is', () => {
+    const ref: RefCallback<any> = () => {};
+    expect(mergeRef(null, ref)).toBe(ref);
+  });
+
+  test('Cleanup', () => {
+    const refObject: MutableRefObject<any> = { current: null };
+    const cleanup = vi.fn();
+    const refCallback = vi.fn(() => cleanup);
+    const legacyCallback = vi.fn();
+    const result = mergeRef(refObject, refCallback, legacyCallback);
+    const current = {};
+    const returnedCleanup = result!(current) as () => void;
+    expect(refObject.current).toBe(current);
+
+    returnedCleanup();
+    expect(refObject.current).toBeNull();
+    expect(cleanup).toHaveBeenCalledTimes(1);
+    expect(legacyCallback).toHaveBeenLastCalledWith(null);
   });
 });

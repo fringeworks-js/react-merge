@@ -1,2 +1,2 @@
-export { default } from './mergeObject';
+export { default, default as mergeObject } from './mergeObject';
 export type * from './types';

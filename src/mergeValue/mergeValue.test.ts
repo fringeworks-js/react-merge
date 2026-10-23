@@ -48,4 +48,27 @@ describe('mergeValue', () => {
     );
     expect(result).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
   });
+
+  test('initialValue function', () => {
+    const result = mergeValue<number, number[]>(
+      [1, 2],
+      (current, value) => [...current, value],
+      { initialValue: () => [0] },
+    );
+    expect(result).toEqual([0, 1, 2]);
+  });
+
+  test('Does not traverse objects', () => {
+    const result = mergeValue<any, any>(
+      ['a', { b: 'b' }, ['c', ['d']]],
+      (current, value) => {
+        if (typeof value === 'string') {
+          return current + value;
+        }
+        return undefined;
+      },
+      { initialValue: '' },
+    );
+    expect(result).toBe('acd');
+  });
 });

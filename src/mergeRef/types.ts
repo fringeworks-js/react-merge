@@ -1,9 +1,9 @@
-import type { MutableRefObject, RefCallback } from 'react';
+import type { RefCallback, RefObject } from 'react';
 
 export type RefValue<T> =
   | RefArray<T>
   | RefCallback<T>
-  | MutableRefObject<T>
+  | RefObject<T | null>
   | boolean
   | null
   | undefined;

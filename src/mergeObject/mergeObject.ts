@@ -7,78 +7,73 @@ import type {
 } from './types';
 
 /**
- * オブジェクトのプロパティ値のマージを行う汎用的な関数
+ * オブジェクトのプロパティ値のマージを行う汎用的な関数\
+ * オブジェクトは、プロパティごとに条件に合う strategy でマージする。
+ * 関数は、それまでの結果を引数に呼び出し、戻り値で結果を置き換える
  * @param objectList 処理対象の値
  * @param strategies マージ処理
  * @param options オプション
  * @returns
  */
 export default function mergeObject<O, R>(
-  objectList: O[],
-  strategies: MergeStrategyItem[],
-  options: MergeObjectOptions<O, R> = {},
+  objectList: readonly O[],
+  strategies: readonly MergeStrategyItem[],
+  options: MergeObjectOptions<R> = {},
 ): R {
   const { initialValue = () => ({}) as R, excludeUnmatched = false } = options;
   return mergeValue<O, R>(
     objectList,
     (currentResult, value) => {
       if (isFunction(value)) {
-        return _mergeObject(
+        return (value as (currentResult: R) => R)(currentResult);
+      } else if (isPlainObject(value)) {
+        return mergeProperties(
           currentResult,
-          (value as (...args: unknown[]) => unknown)(currentResult),
+          value,
           strategies,
           excludeUnmatched,
         );
-      } else if (isPlainObject(value)) {
-        return _mergeObject(currentResult, value, strategies, excludeUnmatched);
       }
+      return undefined;
     },
-    {
-      initialValue,
-    },
+    { initialValue },
   );
 }
 
-function _mergeObject<O>(
-  currentResult: any,
-  object: O,
-  strategies: MergeStrategyItem[],
+function mergeProperties<R>(
+  currentResult: R,
+  object: Readonly<Record<string, unknown>>,
+  strategies: readonly MergeStrategyItem[],
   excludeUnmatched: boolean,
-) {
-  let isMerged = false;
-  for (const key in object) {
-    const value: any = object[key];
-    let isMatched = false;
-    for (const { condition, initialValue, strategy } of strategies) {
-      if (_matchCondition(condition, key, value)) {
-        isMatched = true;
-        let currentValue = currentResult[key];
-        if (currentValue === undefined) {
-          if (isFunction(initialValue)) {
-            currentValue = (initialValue as (...args: unknown[]) => unknown)();
-          } else if (initialValue !== undefined) {
-            currentValue = initialValue;
-          }
-        }
-        const result = strategy(currentValue, value, { key });
-        if (result !== undefined) {
-          // マージ対象の場合はstrategyを適用
-          currentResult[key] = result;
-          isMerged = true;
-        }
-        break;
+): R {
+  // 初期値や関数の戻り値として渡されたオブジェクトを書き換えないよう、複製してから書き込む
+  const result: Record<string, unknown> = { ...(currentResult as object) };
+  for (const [key, value] of Object.entries(object)) {
+    const item = strategies.find(({ condition }) =>
+      matchCondition(condition, key, value),
+    );
+    if (item) {
+      const { initialValue, strategy } = item;
+      let currentValue = result[key];
+      if (currentValue === undefined) {
+        currentValue = isFunction(initialValue)
+          ? (initialValue as () => unknown)()
+          : initialValue;
       }
-    }
-    if (!isMatched && !excludeUnmatched) {
-      currentResult[key] = value;
+      const strategyResult = strategy(currentValue, value, key);
+      if (strategyResult !== undefined) {
+        result[key] = strategyResult;
+      }
+    } else if (!excludeUnmatched) {
+      result[key] = value;
     }
   }
-  return isMerged ? currentResult : undefined;
+  return result as R;
 }
 
-function _matchCondition(
+function matchCondition(
   condition: MergeCondition | undefined,
-  key: PropertyKey,
+  key: string,
   value: unknown,
 ): boolean {
   if (!condition) {
@@ -86,9 +81,7 @@ function _matchCondition(
   } else if (typeof condition === 'string') {
     return key === condition;
   } else if (condition instanceof RegExp) {
-    return condition.test(String(key));
-  } else if (isFunction(condition)) {
-    return condition(key, value);
+    return condition.test(key);
   }
-  return false;
+  return condition(key, value);
 }

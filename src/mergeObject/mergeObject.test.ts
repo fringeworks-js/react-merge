@@ -112,4 +112,55 @@ describe('mergeObject', () => {
     );
     expect(result).toEqual({ a: 21, b: 2, c: 39 });
   });
+
+  test('Function replaces the result', () => {
+    const received: unknown[] = [];
+    const result = mergeObject<any, any>(
+      [
+        { a: 1, b: 2 },
+        (current: any) => {
+          received.push(current);
+          return { a: current.a };
+        },
+        { c: 3 },
+      ],
+      [],
+    );
+    expect(received).toEqual([{ a: 1, b: 2 }]);
+    expect(result).toEqual({ a: 1, c: 3 });
+  });
+
+  test('Nested properties are not merged into the result', () => {
+    const result = mergeObject<any, any>(
+      [{ x: { a: 1 } }],
+      [{ condition: 'a', strategy: (_current: any, value: any) => value }],
+      { excludeUnmatched: true },
+    );
+    expect(result).toEqual({});
+  });
+
+  test('initialValue of the strategy item', () => {
+    const result = mergeObject<any, any>(
+      [{ a: 1 }, { a: 2 }],
+      [
+        {
+          condition: 'a',
+          initialValue: () => [],
+          strategy: (current: any, value: any) => [...current, value],
+        },
+      ],
+    );
+    expect(result).toEqual({ a: [1, 2] });
+  });
+
+  test('Does not mutate the arguments', () => {
+    const initial = { a: 1 };
+    const object = { b: 2 };
+    const result = mergeObject<any, any>([object, { c: 3 }], [], {
+      initialValue: initial,
+    });
+    expect(result).toEqual({ a: 1, b: 2, c: 3 });
+    expect(initial).toEqual({ a: 1 });
+    expect(object).toEqual({ b: 2 });
+  });
 });
